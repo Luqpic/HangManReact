@@ -3,11 +3,17 @@ import './App.css'
 
 const WORDS = ['REACT', 'VITE', 'JAVASCRIPT', 'COMPONENT', 'HOOKS']
 const MAX_WRONG_GUESSES = 6
+const pickRandomWord = () => {
+  if (typeof crypto === 'undefined') return WORDS[0]
+
+  const randomBuffer = new Uint32Array(1)
+  crypto.getRandomValues(randomBuffer)
+  const index = randomBuffer[0] % WORDS.length
+  return WORDS[index]
+}
 
 function App() {
-  const [secretWord, setSecretWord] = useState(
-    () => WORDS[Math.floor(Math.random() * WORDS.length)],
-  )
+  const [secretWord, setSecretWord] = useState(() => pickRandomWord())
   const [guessedLetters, setGuessedLetters] = useState([])
 
   const wrongGuesses = useMemo(
@@ -29,7 +35,7 @@ function App() {
   }
 
   const resetGame = () => {
-    setSecretWord(WORDS[Math.floor(Math.random() * WORDS.length)])
+    setSecretWord(pickRandomWord())
     setGuessedLetters([])
   }
 
