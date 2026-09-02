@@ -1,98 +1,83 @@
-import { useMemo, useState } from 'react'
-import './App.css'
+import { useMemo, useState } from "react";
+import { HangmanDrawing } from "./components/HangmanDrawing";
+import { Keyboard } from "./components/Keyboard";
+import "./App.css";
 
-const WORDS: readonly string[] = ['REACT', 'VITE', 'JAVASCRIPT', 'COMPONENT', 'HOOKS']
-const MAX_WRONG_GUESSES = 6
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-const pickRandomWord = (): string => {
-  if (typeof crypto === 'undefined') return WORDS[0]
+const WORDS: readonly string[] = [
+  "REACT",
+  "VITE",
+  "JAVASCRIPT",
+  "COMPONENT",
+  "HOOKS",
+];
+const MAX_WRONG_GUESSES = 6;
 
-  const randomBuffer = new Uint32Array(1)
-  crypto.getRandomValues(randomBuffer)
-  const index = randomBuffer[0] % WORDS.length
-  return WORDS[index]
+function pickRandomWord(): string {
+  const randomIndex = Math.floor(Math.random() * WORDS.length);
+  return WORDS[randomIndex];
 }
 
 function App() {
-  const [secretWord, setSecretWord] = useState<string>(() => pickRandomWord())
-  const [guessedLetters, setGuessedLetters] = useState<string[]>([])
-
+  const [secretWord, setSecretWord] = useState<string>(() => pickRandomWord());
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const wrongGuesses = useMemo(
-    () => guessedLetters.filter((letter) => !secretWord.includes(letter)).length,
+    () =>
+      guessedLetters.filter((letter) => !secretWord.includes(letter)).length,
     [guessedLetters, secretWord],
-  )
-
+  );
   const hasWon = useMemo(
-    () => secretWord.split('').every((letter) => guessedLetters.includes(letter)),
+    () =>
+      secretWord.split("").every((letter) => guessedLetters.includes(letter)),
     [guessedLetters, secretWord],
-  )
-  const hasLost = wrongGuesses >= MAX_WRONG_GUESSES
-
-  const alphabet: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-
+  );
+  const hasLost = wrongGuesses >= MAX_WRONG_GUESSES;
+  const isGameOver = hasWon || hasLost;
   const guessLetter = (letter: string) => {
-    if (hasWon || hasLost || guessedLetters.includes(letter)) return
-    setGuessedLetters((current) => [...current, letter])
-  }
-
+    if (isGameOver || guessedLetters.includes(letter)) return;
+    setGuessedLetters((current) => [...current, letter]);
+  };
   const resetGame = () => {
-    setSecretWord(pickRandomWord())
-    setGuessedLetters([])
-  }
-
+    setSecretWord(pickRandomWord());
+    setGuessedLetters([]);
+  };
   return (
-    <main className="app">
-      <h1>Hangman Template</h1>
-      <p className="subtitle">A simple React starter that you can extend.</p>
+    <main className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md mx-auto shadow-md">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-lg font-bold">Hangman Game</CardTitle>
+        </CardHeader>
+        <section className="board flex items-center">
+          <CardContent className="flex flex-col items-center justify-center p-6">
+            <HangmanDrawing wrongGuesses={wrongGuesses} />
+            <div className="word" aria-label="Hidden word">
+              {secretWord.split("").map((letter, index) => (
+                <span className="letter" key={`${letter}-${index}`}>
+                  {guessedLetters.includes(letter) || hasLost ? letter : "_"}
+                </span>
+              ))}
+            </div>
+            <Badge className="status">
+              {hasWon && "You won!"}
+              {hasLost && `You lost! The word was ${secretWord}.`}
+              {!hasWon &&
+                !hasLost &&
+                `${MAX_WRONG_GUESSES - wrongGuesses} guesses left`}
+            </Badge>
 
-      <section className="board">
-        <div className="hangman-drawing" aria-label={`Wrong guesses: ${wrongGuesses}`}>
-          <div className="base"></div>
-          <div className="pole"></div>
-          <div className="beam"></div>
-          <div className="rope"></div>
-          {wrongGuesses >= 1 && <div className="head"></div>}
-          {wrongGuesses >= 2 && <div className="body"></div>}
-          {wrongGuesses >= 3 && <div className="arm left"></div>}
-          {wrongGuesses >= 4 && <div className="arm right"></div>}
-          {wrongGuesses >= 5 && <div className="leg left"></div>}
-          {wrongGuesses >= 6 && <div className="leg right"></div>}
-        </div>
-
-        <div className="word" aria-label="Hidden word">
-          {secretWord.split('').map((letter, index) => (
-            <span className="letter" key={`${letter}-${index}`}>
-              {guessedLetters.includes(letter) || hasLost ? letter : '_'}
-            </span>
-          ))}
-        </div>
-
-        <p className="status">
-          {hasWon && 'You won!'}
-          {hasLost && `You lost! The word was ${secretWord}.`}
-          {!hasWon && !hasLost && `${MAX_WRONG_GUESSES - wrongGuesses} guesses left.`}
-        </p>
-
-        <div className="keyboard" aria-label="Letter buttons">
-          {alphabet.map((letter) => (
-            <button
-              key={letter}
-              type="button"
-              className="key"
-              onClick={() => guessLetter(letter)}
-              disabled={guessedLetters.includes(letter) || hasWon || hasLost}
-            >
-              {letter}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <button type="button" className="reset" onClick={resetGame}>
-        New Word
-      </button>
+            <Keyboard
+              guessedLetters={guessedLetters}
+              disabled={isGameOver}
+              onSelectLetter={guessLetter}
+              onReset={resetGame}
+            />
+          </CardContent>
+        </section>
+      </Card>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
