@@ -1,19 +1,6 @@
-.app {
-  margin: 0 auto;
-  padding: 2rem 1rem 3rem;
-  max-width: 860px;
-  text-align: center;
-}
-
 .subtitle {
   margin-bottom: 2rem;
   color: #4b5563;
-}
-
-.board {
-  display: grid;
-  gap: 1.5rem;
-  justify-items: center;
 }
 
 .hangman-drawing {
@@ -130,6 +117,7 @@
 .status {
   margin: 0;
   font-weight: 600;
+  padding: 20px;
 }
 
 .keyboard {

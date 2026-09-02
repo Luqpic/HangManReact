@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 interface KeyboardProps {
@@ -14,28 +16,38 @@ export function Keyboard({
   onReset,
 }: KeyboardProps) {
   return (
-    <div className="keyboard-container">
-      <div className="keyboard" aria-label="Letter buttons">
+    <div className="flex flex-col items-center gap-4 w-full">
+      <div
+        className="flex flex-wrap justify-center gap-1.5 max-w-sm"
+        aria-label="Letter buttons"
+      >
         {ALPHABET.map((letter) => {
           const isGuessed = guessedLetters.includes(letter);
           return (
-            <button
+            <Button
               key={letter}
               type="button"
-              className="key"
+              variant={isGuessed ? "secondary" : "outline"}
+              size="sm"
+              className="h-9 w-9 p-0 font-bold uppercase transition-transform active:scale-95"
               onClick={() => onSelectLetter(letter)}
               disabled={isGuessed || disabled}
             >
               {letter}
-            </button>
+            </Button>
           );
         })}
       </div>
 
       {onReset && (
-        <button type="button" className="reset" onClick={onReset}>
+        <Button
+          type="button"
+          variant="default"
+          onClick={onReset}
+          className="mt-2 font-semibold cursor-pointer"
+        >
           New Word
-        </button>
+        </Button>
       )}
     </div>
   );
