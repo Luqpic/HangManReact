@@ -6,6 +6,7 @@ import "./App.css";
 import { generate } from "random-words";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import logo from "./assets/logo.svg";
 
 const MAX_WRONG_GUESSES = 10;
 
@@ -40,7 +41,8 @@ function App() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md mx-auto shadow-md">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardHeader className="flex flex-row items-center justify-center space-y-0 pb-2 gap-3">
+          <img src={logo} alt="logo" className="w-20 h-20" />
           <CardTitle className="text-lg font-bold ">Hangman Game</CardTitle>
         </CardHeader>
         <section className="board flex items-center">
