@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import './App.css'
 
-const WORDS = ['REACT', 'VITE', 'JAVASCRIPT', 'COMPONENT', 'HOOKS']
+const WORDS: readonly string[] = ['REACT', 'VITE', 'JAVASCRIPT', 'COMPONENT', 'HOOKS']
 const MAX_WRONG_GUESSES = 6
-const pickRandomWord = () => {
+
+const pickRandomWord = (): string => {
   if (typeof crypto === 'undefined') return WORDS[0]
 
   const randomBuffer = new Uint32Array(1)
@@ -13,8 +14,8 @@ const pickRandomWord = () => {
 }
 
 function App() {
-  const [secretWord, setSecretWord] = useState(() => pickRandomWord())
-  const [guessedLetters, setGuessedLetters] = useState([])
+  const [secretWord, setSecretWord] = useState<string>(() => pickRandomWord())
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([])
 
   const wrongGuesses = useMemo(
     () => guessedLetters.filter((letter) => !secretWord.includes(letter)).length,
@@ -27,9 +28,9 @@ function App() {
   )
   const hasLost = wrongGuesses >= MAX_WRONG_GUESSES
 
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+  const alphabet: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
-  const guessLetter = (letter) => {
+  const guessLetter = (letter: string) => {
     if (hasWon || hasLost || guessedLetters.includes(letter)) return
     setGuessedLetters((current) => [...current, letter])
   }
