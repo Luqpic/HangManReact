@@ -3,21 +3,15 @@ import { HangmanDrawing } from "./components/HangmanDrawing";
 import { Keyboard } from "./components/Keyboard";
 import "./App.css";
 
+import { generate } from "random-words";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const WORDS: readonly string[] = [
-  "REACT",
-  "VITE",
-  "JAVASCRIPT",
-  "COMPONENT",
-  "HOOKS",
-];
-const MAX_WRONG_GUESSES = 6;
+const MAX_WRONG_GUESSES = 10;
 
 function pickRandomWord(): string {
-  const randomIndex = Math.floor(Math.random() * WORDS.length);
-  return WORDS[randomIndex];
+  const word = generate() as string;
+  return word.toUpperCase();
 }
 
 function App() {
@@ -47,7 +41,7 @@ function App() {
     <main className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md mx-auto shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg font-bold">Hangman Game</CardTitle>
+          <CardTitle className="text-lg font-bold ">Hangman Game</CardTitle>
         </CardHeader>
         <section className="board flex items-center">
           <CardContent className="flex flex-col items-center justify-center p-6">
